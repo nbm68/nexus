@@ -2,135 +2,112 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Ecosistema Digital Pro - El Poder Está En Ti</title>
+    <title>NEXUS - El Poder Está En Ti</title>
     <style>
-        body { margin: 0; overflow: hidden; background: #020205; font-family: 'Inter', sans-serif; }
-        #ui-header { position: absolute; top: 30px; width: 100%; text-align: center; color: white; pointer-events: none; z-index: 10; }
-        #ui-header h1 { letter-spacing: 5px; font-weight: 300; text-transform: uppercase; margin: 0; font-size: 1.4rem; text-shadow: 0 0 10px #00ffcc; }
+        body { margin: 0; overflow: hidden; background: #020205; font-family: 'Segoe UI', sans-serif; }
+        #header { position: absolute; top: 20px; width: 100%; text-align: center; color: white; pointer-events: none; }
+        #header h1 { letter-spacing: 5px; text-transform: uppercase; font-weight: 300; margin: 0; font-size: 1.2rem; }
+        #header p { color: #00ffcc; opacity: 0.8; margin-top: 5px; font-size: 0.8rem; }
         
         #info-card { 
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(10, 20, 30, 0.95); backdrop-filter: blur(15px);
-            border: 2px solid #00ffcc; padding: 30px; border-radius: 20px; color: white;
-            width: 280px; display: none; text-align: center; z-index: 100;
-            box-shadow: 0 0 50px rgba(0, 255, 204, 0.4);
+            background: rgba(10, 20, 30, 0.95); backdrop-filter: blur(10px);
+            border: 1px solid #00ffcc; padding: 25px; border-radius: 20px; color: white;
+            width: 80%; max-width: 280px; display: none; text-align: center; z-index: 100;
         }
         
         .cta-btn {
             display: inline-block; margin-top: 20px; padding: 12px 25px;
             background: #00ffcc; color: #020205; text-decoration: none;
-            font-weight: bold; border-radius: 50px; transition: 0.3s;
+            font-weight: bold; border-radius: 50px; transition: 0.3s; font-size: 0.9rem;
         }
         .cta-btn:hover { background: white; transform: scale(1.05); }
-        #close-btn { position: absolute; top: 10px; right: 15px; cursor: pointer; color: #666; }
     </style>
 </head>
 <body>
-
-    <div id="ui-header">
-        <h1>El Poder está en Ti</h1>
-        <p style="color: #00ffcc; opacity: 0.8;">Toca los nodos para explorar el sistema</p>
+    <div id="header">
+        <h1>NEXUS</h1>
+        <p>Tu Ecosistema de Reinvención Digital</p>
     </div>
 
     <div id="info-card">
-        <span id="close-btn" onclick="document.getElementById('info-card').style.display='none'">✕</span>
-        <h2 id="card-title" style="color: #00ffcc; margin-top:0;">Herramienta</h2>
-        <p id="card-text">Descripción...</p>
-        <a id="whatsapp-link" href="#" target="_blank" class="cta-btn">HABLAR CON EL ESTRATEGA</a>
+        <h2 id="title" style="color: #00ffcc; margin-top:0; font-size: 1.2rem;"></h2>
+        <p id="text" style="font-size: 0.9rem;"></p>
+        <a id="wa-link" href="#" target="_blank" class="cta-btn">HABLAR CON EL ESTRATEGA</a>
+        <p style="margin-top:15px; font-size:11px; cursor:pointer; color: #666;" onclick="document.getElementById('info-card').style.display='none'">[Cerrar]</p>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // Configuración básica
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x020205, 1);
         document.body.appendChild(renderer.domElement);
 
-        // --- ILUMINACIÓN POTENTE ---
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // Luz suave general
-        scene.add(ambientLight);
-        
-        const frontLight = new THREE.PointLight(0x00ffcc, 2, 100);
-        frontLight.position.set(0, 5, 15); // Luz desde el frente para que no se vea negro
-        scene.add(frontLight);
+        const isMobile = window.innerWidth < 768;
+        const radius = isMobile ? 5 : 8; 
+        camera.position.z = isMobile ? 22 : 18; 
 
-        // --- PARTÍCULAS DE FONDO ---
-        const pGeometry = new THREE.BufferGeometry();
-        const pCoords = [];
-        for(let i=0; i<1500; i++) {
-            pCoords.push((Math.random()-0.5)*50, (Math.random()-0.5)*50, (Math.random()-0.5)*50);
-        }
-        pGeometry.setAttribute('position', new THREE.Float32BufferAttribute(pCoords, 3));
-        const pMaterial = new THREE.PointsMaterial({ color: 0x00ffcc, size: 0.1 });
-        const particles = new THREE.Points(pGeometry, pMaterial);
-        scene.add(particles);
+        const light = new THREE.PointLight(0x00ffcc, 2, 100);
+        light.position.set(0, 5, 15);
+        scene.add(light);
+        scene.add(new THREE.AmbientLight(0x404040, 2));
 
-        // --- HERRAMIENTAS ---
+        const pGeo = new THREE.BufferGeometry();
+        const pPos = [];
+        for(let i=0; i<1500; i++) pPos.push((Math.random()-0.5)*100, (Math.random()-0.5)*100, (Math.random()-0.5)*100);
+        pGeo.setAttribute('position', new THREE.Float32BufferAttribute(pPos, 3));
+        scene.add(new THREE.Points(pGeo, new THREE.PointsMaterial({ color: 0x00ffcc, size: 0.08 })));
+
         const tools = [
-            { name: "Make / Automación", color: 0x6e44ff, info: "Optimizamos tu tiempo con procesos automáticos inteligentes." },
-            { name: "IA Estratégica", color: 0x00ffcc, info: "Implementamos IA para que sea tu asistente 24/7." },
-            { name: "Video Marketing", color: 0xff4444, info: "Edición de alto impacto para conectar con tu audiencia." },
-            { name: "Marketing +40", color: 0xffaa00, info: "Estrategias diseñadas para dominar el entorno digital actual." }
+            { name: "Automatización con Make", color: 0x6e44ff, info: "Optimizamos tu flujo de trabajo para que la tecnología trabaje por ti." },
+            { name: "IA Generativa", color: 0x00ffcc, info: "Implementamos asistentes de IA para potenciar tu marca profesional." },
+            { name: "Video Marketing", color: 0xff4444, info: "Edición de alto impacto para conectar con tu audiencia digital." },
+            { name: "Estrategia +40", color: 0xffaa00, info: "Reinvención digital diseñada para quienes dominan el sistema." }
         ];
 
         const nodes = [];
-        tools.forEach((tool, i) => {
-            const geometry = new THREE.SphereGeometry(1.5, 32, 32);
-            const material = new THREE.MeshStandardMaterial({ 
-                color: tool.color,
-                emissive: tool.color,
-                emissiveIntensity: 0.4,
-                metalness: 0.7,
-                roughness: 0.2
-            });
-            const sphere = new THREE.Mesh(geometry, material);
-            
+        tools.forEach((t, i) => {
+            const sphere = new THREE.Mesh(
+                new THREE.SphereGeometry(isMobile ? 1.2 : 1.5, 32, 32),
+                new THREE.MeshStandardMaterial({ color: t.color, emissive: t.color, emissiveIntensity: 0.3 })
+            );
             const angle = (i / tools.length) * Math.PI * 2;
-            sphere.position.set(Math.cos(angle) * 8, Math.sin(angle) * 2, -2);
-            sphere.userData = tool;
-            
+            sphere.position.set(Math.cos(angle)*radius, Math.sin(angle)*(radius/2.5), 0);
+            sphere.userData = t;
             scene.add(sphere);
             nodes.push(sphere);
         });
 
-        camera.position.z = 15;
-
-        // --- INTERACCIÓN ---
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
 
-        function handleSelect(x, y) {
-            mouse.x = (x / window.innerWidth) * 2 - 1;
-            mouse.y = -(y / window.innerHeight) * 2 + 1;
+        function onAction(e) {
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            mouse.x = (clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(nodes);
-
             if (intersects.length > 0) {
-                const data = intersects[0].object.userData;
-                const msg = `Hola, vengo de tu Ecosistema 3D. Me interesa *${data.name}* y quiero activar mi poder digital.`;
-                document.getElementById('whatsapp-link').href = `https://wa.me/584124501073?text=${encodeURIComponent(msg)}`;
-                document.getElementById('card-title').innerText = data.name;
-                document.getElementById('card-text').innerText = data.info;
+                const d = intersects[0].object.userData;
+                document.getElementById('title').innerText = d.name;
+                document.getElementById('text').innerText = d.info;
+                document.getElementById('wa-link').href = `https://wa.me/584124501073?text=Hola, vengo de NEXUS. Me interesa: *${d.name}*`;
                 document.getElementById('info-card').style.display = 'block';
             }
         }
 
-        window.addEventListener('click', (e) => handleSelect(e.clientX, e.clientY));
+        window.addEventListener('click', onAction);
+        window.addEventListener('touchstart', onAction);
 
-        // --- ANIMACIÓN ---
         function animate() {
             requestAnimationFrame(animate);
-            const t = Date.now() * 0.001;
-            
-            nodes.forEach((n, i) => {
-                n.position.y += Math.sin(t + i) * 0.01;
-                n.rotation.y += 0.01;
+            nodes.forEach((n, i) => { 
+                n.rotation.y += 0.01; 
+                n.position.y += Math.sin(Date.now()*0.001+i)*0.005; 
             });
-
-            particles.rotation.y += 0.001;
             renderer.render(scene, camera);
         }
         animate();
